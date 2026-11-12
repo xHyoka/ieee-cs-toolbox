@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Grup Eşleştirici | IEEE CS</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="container">
+    <h1>Grup Eşleştirici</h1>
+    <p class="subtitle">İsimleri gir, grup boyutunu seç, gruplar otomatik oluşsun.</p>
+
+    <form id="groupForm">
+      <label for="title">Etkinlik adı</label>
+      <input id="title" type="text" placeholder="Örn: Spring Boot Workshop">
+
+      <label for="names">İsimler (her satıra bir isim)</label>
+      <textarea id="names" rows="8" placeholder="Ali&#10;Ayşe&#10;Mehmet&#10;Zeynep&#10;Can"></textarea>
+
+      <label for="groupSize">Grup boyutu</label>
+      <select id="groupSize">
+        <option value="2">2'li</option>
+        <option value="3">3'lü</option>
+        <option value="4">4'lü</option>
+      </select>
+
+      <button type="submit" id="submitBtn">Grupları Oluştur</button>
+    </form>
+
+    <p id="error" class="error" hidden></p>
+
+    <section id="result" hidden>
+      <h2 id="resultTitle"></h2>
+      <div id="groups" class="groups"></div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
