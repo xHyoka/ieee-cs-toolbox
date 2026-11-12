@@ -1,0 +1,15 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: toolbox-db
+    environment:
+      POSTGRES_DB: toolbox
+      POSTGRES_USER: toolbox
+      POSTGRES_PASSWORD: toolbox
+    ports:
+      - "5433:5432"
+    volumes:
+      - toolbox-data:/var/lib/postgresql/data
+
+volumes:
+  toolbox-data:
