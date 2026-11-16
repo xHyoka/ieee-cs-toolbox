@@ -3,39 +3,737 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Grup Eşleştirici | IEEE CS</title>
-  <link rel="stylesheet" href="style.css">
+  <title>IEEE İKÇÜ CS - Computer Society Öğrenci Kulübü</title>
+  <meta name="description" content="Üniversite Computer Society kulübü için grup eşleştirici, müsaitlik planlayıcı, anonim soru kutusu ve fikir oylama panosu.">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/settings.css">
+  <link rel="icon" href="https://jobstars.com/wp-content/uploads/2021/12/IEEE-Computer-Society.png">
 </head>
-<body>
-  <main class="container">
-    <h1>Grup Eşleştirici</h1>
-    <p class="subtitle">İsimleri gir, grup boyutunu seç, gruplar otomatik oluşsun.</p>
+<body class="auth-locked">
+  <!-- GİRİŞ / KAYIT EKRANI (AUTH) -->
+  <div class="auth-overlay" id="auth-overlay">
+    <div class="auth-card">
+      <div class="auth-brand">
+        <div class="brand-icon-wrap">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="16 18 22 12 16 6"></polyline>
+            <polyline points="8 6 2 12 8 18"></polyline>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <h1>IEEE IKCU</h1>
+          <span>Computer Society</span>
+        </div>
+      </div>
+      <!-- GİRİŞ FORMU -->
+      <form id="login-form" class="auth-form" autocomplete="on" novalidate>
+        <h2 class="auth-title">Giriş Yap</h2>
+        <p class="auth-subtitle">Devam etmek için hesabınla giriş yap.</p>
 
-    <form id="groupForm">
-      <label for="title">Etkinlik adı</label>
-      <input id="title" type="text" placeholder="Örn: Spring Boot Workshop">
+        <div class="auth-error" id="login-error" role="alert"></div>
 
-      <label for="names">İsimler (her satıra bir isim)</label>
-      <textarea id="names" rows="8" placeholder="Ali&#10;Ayşe&#10;Mehmet&#10;Zeynep&#10;Can"></textarea>
+        <div class="form-group">
+          <label class="form-label" for="login-username">Kullanıcı Adı</label>
+          <input type="text" class="form-input" id="login-username" autocomplete="username" placeholder="ıeee_cs" required>
+        </div>
 
-      <label for="groupSize">Grup boyutu</label>
-      <select id="groupSize">
-        <option value="2">2'li</option>
-        <option value="3">3'lü</option>
-        <option value="4">4'lü</option>
-      </select>
+        <div class="form-group">
+  <label class="form-label" for="login-password">Şifre</label>
+  <div class="password-wrapper">
+    <input type="password" class="form-input" id="login-password" autocomplete="current-password" placeholder="••••••••" required>
+    <button type="button" class="toggle-password-btn" id="toggle-login-password" aria-label="Şifreyi göster/gizle">
+      <!-- Göz İkonu -->
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+        <circle cx="12" cy="12" r="3"></circle>
+      </svg>
+    </button>
+  </div>
+</div>
 
-      <button type="submit" id="submitBtn">Grupları Oluştur</button>
-    </form>
+        <button type="submit" class="btn-primary" id="btn-login" style="width: 100%;">Giriş Yap</button>
 
-    <p id="error" class="error" hidden></p>
+        <p class="auth-switch">
+          Hesabın yok mu?
+          <a href="#" id="link-show-register">Yeni hesap oluştur</a>
+        </p>
+      </form>
 
-    <section id="result" hidden>
-      <h2 id="resultTitle"></h2>
-      <div id="groups" class="groups"></div>
-    </section>
-  </main>
+      <!-- KAYIT FORMU -->
+      <form id="register-form" class="auth-form" autocomplete="on" style="display: none;" novalidate>
+        <h2 class="auth-title">Yeni Hesap Oluştur</h2>
 
-  <script src="app.js"></script>
+        <div class="auth-error" id="register-error" role="alert"></div>
+
+        <div class="form-group">
+          <label class="form-label" for="register-username">Kullanıcı Adı</label>
+          <input type="text" class="form-input" id="register-username" autocomplete="username" placeholder="3-20 karakter (harf, rakam, _ . -)" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="register-password">Şifre</label>
+          <input type="password" class="form-input" id="register-password" autocomplete="new-password" placeholder="En az 6 karakter" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="register-password2">Şifre (Tekrar)</label>
+          <input type="password" class="form-input" id="register-password2" autocomplete="new-password" placeholder="Şifreni tekrar yaz" required>
+        </div>
+
+        <button type="submit" class="btn-primary" id="btn-register" style="width: 100%;">Hesap Oluştur</button>
+
+        <p class="auth-switch">
+          Zaten hesabın var mı?
+          <a href="#" id="link-show-login">Giriş yap</a>
+        </p>
+      </form>
+    </div>
+  </div>
+
+  <div class="app-container">
+    <!-- SIDEBAR NAVIGATION -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="brand-icon-wrap">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="16 18 22 12 16 6"></polyline>
+            <polyline points="8 6 2 12 8 18"></polyline>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <h1>IEEE IKCU</h1>
+          <span>Computer Society</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-section-title">Menü</div>
+        
+        <!-- Tab 1: Grup Eşleştirici (Primary MVP) -->
+        <button class="nav-item active" data-tab="groups" id="nav-btn-groups">
+          <span class="nav-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+              <circle cx="9" cy="7" r="4"></circle>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+            </svg>
+          </span>
+          <span class="nav-label">Grup Eşleştirici</span>
+        </button>
+
+        <!-- Tab 2: Müsaitlik Planlayıcı -->
+        <button class="nav-item" data-tab="availability" id="nav-btn-availability">
+          <span class="nav-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+              <line x1="16" y1="2" x2="16" y2="6"></line>
+              <line x1="8" y1="2" x2="8" y2="6"></line>
+              <line x1="3" y1="10" x2="21" y2="10"></line>
+            </svg>
+          </span>
+          <span class="nav-label">Toplantı Planlayıcı</span>
+        </button>
+
+        <!-- Tab 3: Anonim Soru Kutusu -->
+        <button class="nav-item" data-tab="questions" id="nav-btn-questions">
+          <span class="nav-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+            </svg>
+          </span>
+          <span class="nav-label">Bize Sor</span>
+          <span class="nav-badge" id="sidebar-question-badge">5</span>
+        </button>
+
+        <!-- Tab 4: Fikir Oylama Panosu -->
+        <button class="nav-item" data-tab="ideas" id="nav-btn-ideas">
+          <span class="nav-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="5"></circle>
+              <line x1="12" y1="1" x2="12" y2="3"></line>
+              <line x1="12" y1="21" x2="12" y2="23"></line>
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+              <line x1="1" y1="12" x2="3" y2="12"></line>
+              <line x1="21" y1="12" x2="23" y2="12"></line>
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+            </svg>
+          </span>
+          <span class="nav-label">Etkinlik Fikirleri</span>
+        </button>
+        <!-- AYARLAR (MENÜNÜN EN ALTI) -->
+      <div class="sidebar-footer">
+        <div class="settings-menu" id="settings-menu">
+          <button type="button" class="settings-menu-item" id="btn-open-profile">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+            <span class="settings-item-label">Profil</span>
+            <!-- Profil -->
+          </button>
+          <button type="button" class="settings-menu-item" id="btn-open-password">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
+            <span class="settings-item-label">Şifreyi Değiştir</span>
+            <!-- Şifreyi Değiştir -->
+          </button>
+        </div>
+
+        <button type="button" class="settings-trigger" id="btn-settings" aria-haspopup="true" aria-expanded="false">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h0a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h0a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v0a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+          </svg>
+          <span>Ayarlar</span>
+        </button>
+      </div>
+      </nav>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+      <!-- TOPBAR -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="mobile-menu-btn" id="mobile-menu-toggle" aria-label="Menüyü Aç/Kapat">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+          </button>
+          <div class="page-title-wrap">
+            <h2 id="current-tab-title">
+              <span>Grup Eşleştirici</span>
+            </h2>
+            <p id="current-tab-subtitle">Kulüp projeleri ve etkinlikler için dengeli ve adil takım oluşturma aracı</p>
+          </div>
+        </div>
+
+        <div class="topbar-right">
+          <span class="user-chip" id="auth-user-label" style="display: none;"></span>
+          <button class="quick-action-btn" id="btn-logout" title="Hesaptan çıkış yap">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+              <polyline points="16 17 21 12 16 7"></polyline>
+              <line x1="21" y1="12" x2="9" y2="12"></line>
+            </svg>
+            Çıkış Yap
+          </button>
+          <button class="quick-action-btn" id="btn-reset-all" title="Tüm mock verilerini fabrika ayarlarına döndür">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="1 4 1 10 7 10"></polyline>
+              <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+            </svg>
+            Verileri Sıfırla
+          </button>
+        </div>
+      </header>
+
+      <!-- TAB CONTENT AREA -->
+      <div class="content-area">
+        
+        <!-- ====================================================================
+             TAB 1: GRUP EŞLEŞTİRİCİ (GROUP MATCHER)
+             ==================================================================== -->
+        <section class="tab-pane active" id="tab-groups">
+          <div class="grid-2col">
+            <!-- Sol Panel: Katılımcı Girişi & Ayarlar -->
+            <div class="glass-panel highlight-cyan">
+              <div class="panel-header">
+                <div class="panel-header-left">
+                  <h3>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--cyan-400)" stroke-width="2">
+                      <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                      <circle cx="8.5" cy="7" r="4"></circle>
+                      <line x1="20" y1="8" x2="20" y2="14"></line>
+                      <line x1="23" y1="11" x2="17" y2="11"></line>
+                    </svg>
+                    Katılımcı Listesi
+                  </h3>
+                  <p>Katılımcı isimlerini alt alta  girin</p>
+                </div>
+                <span class="counter-badge" id="participant-count-badge">0 Katılımcı</span>
+              </div>
+
+              <!-- İsim Alanı -->
+              <div class="form-group">
+                <textarea 
+                  class="form-textarea" 
+                  id="group-names-input" 
+                  placeholder="Ahmet Yılmaz&#10;Zeynep Kaya&#10;Mehmet Demir&#10;Elif Çelik..."></textarea>
+                
+                <div class="textarea-actions">
+                  <div class="quick-links">
+                    <button class="btn-text-action" id="btn-fill-sample-names">
+                      ⚡ Örnek İsimleri Doldur (max16 Kişi)
+                    </button>
+                    <button class="btn-text-action orange" id="btn-shuffle-input" title="Giriş listesini karıştır">
+                      🎲 Karıştır
+                    </button>
+                  </div>
+                  <button class="btn-danger-subtle" id="btn-clear-names">
+                    Temizle
+                  </button>
+                </div>
+              </div>
+
+              <!-- Grup Boyutu Seçimi -->
+              <div class="form-group">
+                <label class="form-label">Grup Büyüklüğü</label>
+                <div class="segmented-group" id="group-size-selector">
+                  <button class="segmented-btn active" data-size="2">2'li Gruplar</button>
+                  <button class="segmented-btn" data-size="3">3'lü Gruplar</button>
+                  <button class="segmented-btn" data-size="4">4'lü Gruplar</button>
+                  <button class="segmented-btn" data-size="5">5'li Gruplar</button>
+                </div>
+              </div>
+
+              <!-- Eşleştir Butonu -->
+              <button class="btn-primary" id="btn-generate-groups" style="width: 100%; font-size: 1rem; padding: 13px;">
+                <span class="btn-text">Grupları Oluştur</span>
+              </button>
+            </div>
+
+            <!-- Sağ Panel: Oluşturulan Gruplar & Sonuçlar -->
+            <div class="glass-panel" id="groups-result-panel">
+              <div class="panel-header">
+                <div class="panel-header-left">
+                  <h3>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--emerald-400)" stroke-width="2">
+                      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                      <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                    </svg>
+                    Eşleştirme Sonuçları
+                  </h3>
+                  <p id="groups-result-subtitle">Henüz bir grup eşleştirmesi yapılmadı</p>
+                </div>
+                <div style="display: flex; gap: 8px;">
+                  <button class="btn-secondary" id="btn-copy-all-groups" style="display: none; padding: 7px 12px; font-size: 0.8rem;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                    </svg>
+                    Sonuçları Kopyala
+                  </button>
+                  <button class="btn-secondary" id="btn-download-groups" style="display: none; padding: 7px 12px; font-size: 0.8rem;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                      <polyline points="7 10 12 15 17 10"></polyline>
+                      <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                    İndir (.txt)
+                  </button>
+                </div>
+              </div>
+
+              <!-- İstatistik Şeridi -->
+              <div class="results-header" id="groups-stats-header" style="display: none;">
+                <div class="results-stats">
+                  <div class="stat-chip">
+                    <span class="stat-chip-label">Toplam Grup</span>
+                    <span class="stat-chip-val" id="stat-total-groups">0</span>
+                  </div>
+                  <div class="stat-chip">
+                    <span class="stat-chip-label">Toplam Katılımcı</span>
+                    <span class="stat-chip-val" id="stat-total-participants">0</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Gruplar Kart Grid'i -->
+              <div class="groups-grid" id="groups-container">
+                <!-- Boş Durum -->
+                <div class="empty-state" id="groups-empty-state">
+                  <div class="empty-state-icon">
+                    <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                      <circle cx="9" cy="7" r="4"></circle>
+                      <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                      <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                    </svg>
+                  </div>
+                  <h4>Eşleştirmeye Hazır</h4>
+                  <p>Sol taraftaki kutudan katılımcı isimlerini girin veya örnek isimleri doldurarak <strong>"Grupları Oluştur"</strong> butonuna tıklayın.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+
+        <!-- ====================================================================
+             TAB 2: MÜSAİTLİK PLANLAYICI (AVAILABILITY SCHEDULER)
+             ==================================================================== -->
+        <section class="tab-pane" id="tab-availability">
+          <!-- Top 3 En Uygun Saat Özeti (Golden Slots) -->
+          <div class="panel-header" style="margin-bottom: 12px;">
+            <div class="panel-header-left">
+              <h3>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--amber-400)" stroke-width="2">
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                </svg>
+                En Yüksek Katılımlı Toplantı Aralıkları
+              </h3>
+              <p>Topluluk üyelerinin ortak müsaitliklerine göre hesaplanan en verimli ilk 3 zaman dilimi</p>
+            </div>
+            <div id="availability-total-respondents" class="counter-badge">
+              0 Kulüp Üyesi Yanıtladı
+            </div>
+          </div>
+
+          <div class="top-slots-container" id="top-slots-container">
+            <!-- Dinamik doldurulacak -->
+          </div>
+
+          <!-- Haftalık Tablo Paneli -->
+          <div class="glass-panel">
+            <div class="scheduler-controls">
+              <div style="display: flex; align-items: center; gap: 14px; flex-wrap: wrap;">
+                <div class="segmented-group" id="scheduler-mode-selector">
+                  <button class="segmented-btn active" data-mode="heatmap">
+                    🔥 Isı Haritası (Genel)
+                  </button>
+                  <button class="segmented-btn" data-mode="personal">
+                    ✍️ Kendi Saatlerimi Seç
+                  </button>
+                </div>
+
+                <!-- Kişi Adı Girişi (Kendi Saatlerimi Seç modunda görünür) -->
+                <div id="personal-name-group" style="display: none; align-items: center; gap: 8px;">
+                  <input type="text" class="form-input" id="student-name-input" placeholder="Adınız Soyadınız" style="width: 200px; padding: 7px 12px;">
+                  <button class="btn-primary" id="btn-save-availability" style="padding: 7px 14px; font-size: 0.84rem;">
+                    Müsaitliğimi Kaydet
+                  </button>
+                  <button class="btn-secondary" id="btn-clear-my-slots" style="padding: 7px 12px; font-size: 0.84rem;">
+                    Temizle
+                  </button>
+                </div>
+              </div>
+
+              <!-- Isı Haritası Lejantı -->
+              <div class="heatmap-legend" id="heatmap-legend">
+                <span>Müsaitlik Yoğunluğu:</span>
+                <div class="legend-bars">
+                  <span class="legend-box" style="background: rgba(255, 255, 255, 0.05);" title="0 Kişi"></span>
+                  <span class="legend-box" style="background: rgba(14, 165, 233, 0.15);" title="1 Kişi"></span>
+                  <span class="legend-box" style="background: rgba(14, 165, 233, 0.35);" title="2-3 Kişi"></span>
+                  <span class="legend-box" style="background: rgba(14, 165, 233, 0.6);" title="4-5 Kişi"></span>
+                  <span class="legend-box" style="background: rgba(16, 185, 129, 0.75);" title="6-7 Kişi"></span>
+                  <span class="legend-box" style="background: rgba(245, 158, 11, 0.85);" title="8+ Kişi"></span>
+                </div>
+                <span>Yüksek</span>
+              </div>
+            </div>
+
+            <!-- Haftalık Tablo Izgarası -->
+            <div class="scheduler-table-wrapper">
+              <table class="scheduler-table" id="scheduler-grid-table">
+                <thead>
+                  <tr>
+                    <th>Saat</th>
+                    <th>Pazartesi</th>
+                    <th>Salı</th>
+                    <th>Çarşamba</th>
+                    <th>Perşembe</th>
+                    <th>Cuma</th>
+                    <th>Cumartesi</th>
+                    <th>Pazar</th>
+                  </tr>
+                </thead>
+                <tbody id="scheduler-table-body">
+                  <!-- JS ile oluşturulacak -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+
+        <!-- ====================================================================
+             TAB 3: ANONİM SORU KUTUSU (ANONYMOUS Q&A BOX)
+             ==================================================================== -->
+        <section class="tab-pane" id="tab-questions">
+          <div class="qa-layout">
+            <!-- Sol: Soru Gönder Formu -->
+            <div class="glass-panel highlight-cyan">
+              <div class="panel-header">
+                <div class="panel-header-left">
+                  <h3>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--cyan-400)" stroke-width="2">
+                      <path d="M12 20h9"></path>
+                      <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+                    </svg>
+                    Anonim Soru Sor
+                  </h3>
+                  <p>Yönetim kuruluna veya topluluğa çekinmeden sor</p>
+                </div>
+              </div>
+
+              <!-- Güvenilirlik Rozeti -->
+              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px; padding: 10px 12px; background: rgba(56, 189, 248, 0.08); border-radius: var(--radius-sm); border: 1px solid rgba(56, 189, 248, 0.2);">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--cyan-400)" stroke-width="2">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+                <span style="font-size: 0.78rem; color: #bae6fd;">%100 Anonim: İsminiz veya IP bilginiz asla tutulmaz.</span>
+              </div>
+
+              <form id="question-form">
+                <div class="form-group">
+                  <label class="form-label" for="question-text">Sorunuz <span class="req">*</span></label>
+                  <textarea 
+                    class="form-textarea" 
+                    id="question-text" 
+                    maxlength="300"
+                    placeholder="Merak ettiğiniz konuyu, önerinizi veya etkinlikle ilgili sorunuzu yazın..." 
+                    style="min-height: 120px;" 
+                    required></textarea>
+                  <div style="display: flex; justify-content: flex-end; font-size: 0.72rem; color: var(--text-dim); margin-top: 4px;">
+                    <span id="question-char-count">0</span> / 300
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="question-category">Kategori</label>
+                  <select class="form-select" id="question-category">
+                    <option value="Genel">Genel Soru / Öneri</option>
+                    <option value="Etkinlik">Etkinlik & Organizasyon</option>
+                    <option value="Teknik">Teknik & Atölyeler</option>
+                    <option value="Kariyer">Kariyer & Staj</option>
+                  </select>
+                </div>
+
+                <button type="submit" class="btn-primary" id="btn-submit-question" style="width: 100%;">
+                  Soruyu Gönder
+                </button>
+              </form>
+            </div>
+
+            <!-- Sağ: Canlı Soru Akışı -->
+            <div>
+              <div class="feed-filters">
+                <div class="category-chips" id="question-category-filter">
+                  <button class="cat-chip active" data-category="all">Tümü</button>
+                  <button class="cat-chip" data-category="Teknik">Teknik</button>
+                  <button class="cat-chip" data-category="Etkinlik">Etkinlik</button>
+                  <button class="cat-chip" data-category="Kariyer">Kariyer</button>
+                  <button class="cat-chip" data-category="Genel">Genel</button>
+                </div>
+
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span style="font-size: 0.76rem; color: var(--text-dim);">Sırala:</span>
+                  <select class="form-select" id="question-sort-select" style="padding: 5px 10px; font-size: 0.78rem; width: auto;">
+                    <option value="popular">🔥 En Çok Beğenilenler</option>
+                    <option value="newest">🕒 En Yeniler</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="questions-feed" id="questions-feed-container">
+                <!-- JS ile yüklenecek -->
+              </div>
+            </div>
+          </div>
+        </section>
+
+
+        <!-- ====================================================================
+             TAB 4: FİKİR OYLAMA PANOSU (EVENT IDEA VOTING BOARD)
+             ==================================================================== -->
+        <section class="tab-pane" id="tab-ideas">
+          <div class="ideas-layout">
+            <!-- Sol: Yeni Fikir Öner -->
+            <div class="glass-panel highlight-orange">
+              <div class="panel-header">
+                <div class="panel-header-left">
+                  <h3>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--orange-400)" stroke-width="2">
+                      <line x1="12" y1="2" x2="12" y2="6"></line>
+                      <line x1="12" y1="18" x2="12" y2="22"></line>
+                      <line x1="4.93" y1="4.93" x2="7.76" y2="7.76"></line>
+                      <line x1="16.24" y1="16.24" x2="19.07" y2="19.07"></line>
+                      <line x1="2" y1="12" x2="6" y2="12"></line>
+                      <line x1="18" y1="12" x2="22" y2="12"></line>
+                      <line x1="4.93" y1="19.07" x2="7.76" y2="16.24"></line>
+                      <line x1="16.24" y1="7.76" x2="19.07" y2="4.93"></line>
+                    </svg>
+                    Etkinlik / Proje Fikri Öner
+                  </h3>
+                  <p>Aklındaki fikri kulüp üyeleriyle paylaş, oylansın</p>
+                </div>
+              </div>
+
+              <form id="idea-form">
+                <div class="form-group">
+                  <label class="form-label" for="idea-title">Etkinlik Başlığı <span class="req">*</span></label>
+                  <input type="text" class="form-input" id="idea-title" placeholder="Örn: 24 Saatlik Game Jam" required>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="idea-category">Format / Tür</label>
+                  <select class="form-select" id="idea-category">
+                    <option value="Hackathon">Hackathon & Maraton</option>
+                    <option value="Workshop">Workshop & Uygulamalı Atölye</option>
+                    <option value="Seminer">Seminer & Konuşma</option>
+                    <option value="Yarışma">CTF & Yarışma</option>
+                    <option value="Sosyal">Sosyal Etkinlik & Tanışma</option>
+                    <option value="Proje">Ortak Açık Kaynak Proje</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="idea-description">Açıklama ve Amaç <span class="req">*</span></label>
+                  <textarea 
+                    class="form-textarea" 
+                    id="idea-description" 
+                    placeholder="Bu etkinlikte ne yapılacak, kimler katılabilir, kulübe ne katar?..." 
+                    style="min-height: 110px;" 
+                    required></textarea>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="idea-author">Öneren (İsteğe Bağlı)</label>
+                  <input type="text" class="form-input" id="idea-author" placeholder="Adınız veya Anonim bırakın">
+                </div>
+
+                <button type="submit" class="btn-orange" id="btn-submit-idea" style="width: 100%;">
+                  Fikri Paylaş ve Oylamaya Aç
+                </button>
+              </form>
+            </div>
+
+            <!-- Sağ: Sıralı Fikir Panosu -->
+            <div>
+              <div class="feed-filters">
+                <div class="category-chips" id="idea-category-filter">
+                  <button class="cat-chip active" data-category="all">Tümü</button>
+                  <button class="cat-chip" data-category="Hackathon">Hackathon</button>
+                  <button class="cat-chip" data-category="Workshop">Workshop</button>
+                  <button class="cat-chip" data-category="Seminer">Seminer</button>
+                  <button class="cat-chip" data-category="Yarışma">Yarışma</button>
+                </div>
+
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span style="font-size: 0.76rem; color: var(--text-dim);">Sıralama:</span>
+                  <select class="form-select" id="idea-sort-select" style="padding: 5px 10px; font-size: 0.78rem; width: auto;">
+                    <option value="votes">🏆 En Çok Oy Alanlar (Liderlik)</option>
+                    <option value="newest">🕒 En Yeni Fikirler</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Liderlik Listesi -->
+              <div class="ideas-ranked-list" id="ideas-ranked-container">
+                <!-- JS ile yüklenecek -->
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- TOAST NOTIFICATION CONTAINER -->
+  <div id="toast-container" aria-live="polite"></div>
+
+  <!-- MODAL: TÜM VERİLERİ SIFIRLAMA ONAYI -->
+  <div class="modal-overlay" id="confirm-reset-modal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title">Fabrika Ayarlarına Dön?</h3>
+        <button class="modal-close-btn" id="btn-close-reset-modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        Tüm eşleşme geçmişi, müsaitlik kayıtları, sorular ve fikirler sıfırlanıp ilk varsayılan kulüp verilerine döndürülecektir. Bu işlem geri alınamaz.
+      </div>
+      <div class="modal-actions">
+        <button class="btn-secondary" id="btn-cancel-reset">İptal</button>
+        <button class="btn-orange" id="btn-confirm-reset">Evet, Sıfırla</button>
+      </div>
+    </div>
+  </div>
+    <!-- MODAL: PROFİL -->
+  <div class="modal-overlay" id="profile-modal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title">Profil</h3>
+        <button class="modal-close-btn" data-close-modal="profile-modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Kullanıcı Adı</label>
+          <input type="text" class="form-input" id="profile-username" readonly>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-secondary" data-close-modal="profile-modal">Kapat</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: ŞİFRE DEĞİŞTİR -->
+  <div class="modal-overlay" id="password-modal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title">Şifreyi Değiştir</h3>
+        <button class="modal-close-btn" data-close-modal="password-modal">&times;</button>
+      </div>
+      <form id="change-password-form" novalidate>
+        <div class="modal-body">
+          <div class="auth-error" id="password-error" role="alert"></div>
+          <div class="form-group">
+            <label class="form-label" for="old-password">Mevcut Şifre</label>
+            <input type="password" class="form-input" id="old-password" autocomplete="current-password" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="new-password">Yeni Şifre</label>
+            <input type="password" class="form-input" id="new-password" autocomplete="new-password" placeholder="En az 6 karakter" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="new-password2">Yeni Şifre (Tekrar)</label>
+            <input type="password" class="form-input" id="new-password2" autocomplete="new-password" required>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary" data-close-modal="password-modal">İptal</button>
+          <button type="submit" class="btn-primary">Şifreyi Güncelle</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT APP INITIALIZATION -->
+  <script src="js/api.js"></script>
+  <script src="js/app.js"></script>
+  <!-- INLINE FALLBACK: Eğer app.js yüklenmezse en azından tab geçişi çalışsın -->
+  <script>
+    (function() {
+      if (typeof window.switchTab === 'function') return;
+      window.switchTab = function(tabId) {
+        document.querySelectorAll('.tab-pane').forEach(function(p) {
+          if (p.id === 'tab-' + tabId) { p.classList.add('active'); }
+          else { p.classList.remove('active'); }
+        });
+        document.querySelectorAll('.nav-item').forEach(function(b) {
+          if (b.getAttribute('data-tab') === tabId) { b.classList.add('active'); }
+          else { b.classList.remove('active'); }
+        });
+      };
+      document.addEventListener('click', function(e) {
+        var btn = e.target;
+        while (btn && !btn.classList.contains('nav-item')) { btn = btn.parentElement; }
+        if (btn && btn.getAttribute('data-tab')) {
+          window.switchTab(btn.getAttribute('data-tab'));
+        }
+      });
+    })();
+  </script>
 </body>
 </html>
