@@ -16,7 +16,9 @@ public record CreateGroupingRequest(
 
         @NotNull(message = "Grup boyutu seçilmeli")
         @Min(value = 2, message = "Grup boyutu en az 2 olmalı")
-        @Max(value = 4, message = "Grup boyutu en fazla 4 olabilir")
-        Integer groupSize
+        @Max(value = 5, message = "Grup boyutu en fazla 5 olabilir")
+        Integer groupSize,
+
+        Boolean preventRepeats
 ) {
 }
